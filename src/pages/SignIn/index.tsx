@@ -1,8 +1,9 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { useForm, FieldValues } from 'react-hook-form';
+import { useNavigation } from '@react-navigation/native';
+
 import { Button } from '../../components/Form/Button';
-import { Input } from '../../components/Form/Input';
 import {
   Container,
   Content,
@@ -15,13 +16,28 @@ import {
   Title,
 } from './styles';
 import logo from '../../assets/logo.png';
+import { InputControl } from '../../components/Form/InputControl';
 
 interface ScreenNavigationProp {
   navigate: (screen: string) => void;
 }
 
+interface IFormInputs {
+  [name: string]: any;
+}
+
 export const SignIn: React.FC = () => {
+  const { handleSubmit, control } = useForm<FieldValues>();
   const { navigate } = useNavigation<ScreenNavigationProp>();
+
+  const handleSignIn = (form: IFormInputs) => {
+    console.log('data');
+    const data = {
+      email: form.email,
+      password: form.password,
+    };
+    console.log(data);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -38,11 +54,23 @@ export const SignIn: React.FC = () => {
           <Content>
             <Logo source={logo}></Logo>
             <View>
-              <Title>Faça seu login</Title>
+              <Title>Faça seu logon</Title>
             </View>
-            <Input placeholder="Email" />
-            <Input placeholder="Senha" />
-            <Button title="Entrar"></Button>
+            <InputControl
+              autoCapitalize="none"
+              autoCorrect={false}
+              control={control}
+              name={'email'}
+              placeholder="Email"
+              keyboardType="email-address"
+            />
+            <InputControl
+              control={control}
+              name={'password'}
+              placeholder="Senha"
+              secureTextEntry
+            />
+            <Button title="Entrar" onPress={handleSubmit(handleSignIn)} />
             <ForgotPasswordButton>
               <ForgotPasswordTitle>Esqueci minha senha</ForgotPasswordTitle>
             </ForgotPasswordButton>
