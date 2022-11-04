@@ -4,6 +4,7 @@ import { useForm, FieldValues } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { api } from '../../services/api';
 
 import { Button } from '../../components/Form/Button';
 import {
@@ -19,6 +20,7 @@ import {
 } from './styles';
 import logo from '../../assets/logo.png';
 import { InputControl } from '../../components/Form/InputControl';
+import { AuthContext } from '../../context/AuthContext';
 
 interface ScreenNavigationProp {
   navigate: (screen: string) => void;
@@ -35,6 +37,11 @@ const formSchema = yup.object({
 });
 
 export const SignIn: React.FC = () => {
+  /* Aqui recebe o contexto de autenticação */
+  const auth = React.useContext(AuthContext);
+  console.log(auth);
+  /* Controlando o estado do botão enviar */
+  const [loading, setLoading] = React.useState(false);
   const {
     handleSubmit,
     control,
@@ -50,7 +57,9 @@ export const SignIn: React.FC = () => {
       email: form.email,
       password: form.password,
     };
-    console.log(data);
+    setLoading(true);
+    /* Usando o metodo do contexto de autenticação */
+    auth.signIn();
   };
 
   return (
@@ -86,7 +95,13 @@ export const SignIn: React.FC = () => {
               secureTextEntry
               error={errors.password && errors.password.message}
             />
-            <Button title="Entrar" onPress={handleSubmit(handleSignIn)} />
+            <Button
+              title="Entrar"
+              disabled={
+                loading || errors.email || errors.password
+              } /* ||errors.email ||errors.password */
+              onPress={handleSubmit(handleSignIn)}
+            />
             <ForgotPasswordButton>
               <ForgotPasswordTitle>Esqueci minha senha</ForgotPasswordTitle>
             </ForgotPasswordButton>

@@ -7,7 +7,7 @@ import { Container, Error } from './styles';
 interface Props extends TextInputProps {
   control: Control;
   name: string;
-  error: string | undefined | any;
+  error: any;
 }
 export const InputControl: React.FC<Props> = ({
   control,
