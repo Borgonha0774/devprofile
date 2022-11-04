@@ -1,10 +1,15 @@
 import React from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Alert,
+} from 'react-native';
 import { useForm, FieldValues } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { api } from '../../services/api';
 
 import { Button } from '../../components/Form/Button';
 import {
@@ -38,8 +43,8 @@ const formSchema = yup.object({
 
 export const SignIn: React.FC = () => {
   /* Aqui recebe o contexto de autenticação */
-  const auth = React.useContext(AuthContext);
-  console.log(auth);
+  const { signIn } = React.useContext(AuthContext);
+
   /* Controlando o estado do botão enviar */
   const [loading, setLoading] = React.useState(false);
   const {
@@ -57,9 +62,17 @@ export const SignIn: React.FC = () => {
       email: form.email,
       password: form.password,
     };
-    setLoading(true);
+
     /* Usando o metodo do contexto de autenticação */
-    auth.signIn();
+    try {
+      setLoading(true);
+      signIn(data);
+    } catch (error) {
+      Alert.alert(
+        'Erro na autenticação',
+        'Ocorreu um erro ao fazer login. verifique as credenciais',
+      );
+    }
   };
 
   return (
@@ -97,9 +110,7 @@ export const SignIn: React.FC = () => {
             />
             <Button
               title="Entrar"
-              disabled={
-                loading || errors.email || errors.password
-              } /* ||errors.email ||errors.password */
+              disabled={loading} /* ||errors.email ||errors.password */
               onPress={handleSubmit(handleSignIn)}
             />
             <ForgotPasswordButton>
