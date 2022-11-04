@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { api } from '../services/api';
@@ -17,6 +17,7 @@ interface ICredentials {
 interface IAuthContext {
   user: IUser;
   signIn(credentials: ICredentials): void;
+  signOut(): void;
 }
 
 interface IProps {
@@ -60,9 +61,26 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
       );
     }
   };
+
+  /*  Ao sair do app é removido as informações que esta em memoria e no storage */
+  const signOut = async () => {
+    await AsyncStorage.removeItem(tokenData);
+    await AsyncStorage.removeItem(userData);
+    setData({} as IAuthState);
+  };
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = (): IAuthContext => {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth deve ser usado em um AuthProvider');
+  }
+
+  return context;
 };

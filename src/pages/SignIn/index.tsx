@@ -25,7 +25,7 @@ import {
 } from './styles';
 import logo from '../../assets/logo.png';
 import { InputControl } from '../../components/Form/InputControl';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface ScreenNavigationProp {
   navigate: (screen: string) => void;
@@ -43,7 +43,7 @@ const formSchema = yup.object({
 
 export const SignIn: React.FC = () => {
   /* Aqui recebe o contexto de autenticação */
-  const { signIn } = React.useContext(AuthContext);
+  const { signIn } = useAuth();
 
   /* Controlando o estado do botão enviar */
   const [loading, setLoading] = React.useState(false);
@@ -113,7 +113,7 @@ export const SignIn: React.FC = () => {
               disabled={loading} /* ||errors.email ||errors.password */
               onPress={handleSubmit(handleSignIn)}
             />
-            <ForgotPasswordButton>
+            <ForgotPasswordButton onPress={() => navigate('ForgotPassword')}>
               <ForgotPasswordTitle>Esqueci minha senha</ForgotPasswordTitle>
             </ForgotPasswordButton>
           </Content>

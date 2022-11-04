@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Home } from './src/pages/Home';
 
 /* Acesso ao tema global no app */
 import { ThemeProvider } from 'styled-components';
